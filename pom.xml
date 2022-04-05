@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.6.6</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.qm</groupId>
+    <artifactId>dockerFile</artifactId>
+    <version>1.0</version>
+    <name>dockerFile</name>
+    <description>Demo project for Spring Boot</description>
+    <properties>
+        <java.version>1.8</java.version>
+        <docker.username>DockerHub账号</docker.username>
+        <docker.password>DockerHub密码</docker.password>
+        <docker.registry>docker.io</docker.registry>
+        <docker.namespace>sunml727</docker.namespace>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!--打包生成文件名-->
+        <finalName>${project.name}</finalName>
+        <!--构建结果所在路径,如下为默认-->
+        <!--<directory>${basedir}/target</directory>-->
+        <!--build过程中涉及到的资源文件-->
+        <resources>
+            <!--举例，我们习惯将Mapper.xml与Mapper.java放到一块。这样maven打包时是不会将其打包的。-->
+            <!--因为它默认认为java文件下是源代码。这时我们可以用resource将其打包到resources下。指定后默认打包会失效-->
+            <resource>
+                <!--需要处理资源文件的路径(如处理java下的所有xml文件)，默认路径为${baseDir}-->
+                <directory>src/main/java</directory>
+                <!--将资源文件（xml文件）打包到resources下（目标路径），默认路径为src/main/resources-->
+                <targetPath>src/main/resources</targetPath>
+                <!--指定需要处理的资源文件（这里是xml文件）-->
+                <includes>
+                    <include>*.xml</include>
+                </includes>
+                <!--排除不需要处理的资源文件-->
+                <excludes>
+                    <exclude>test.xml</exclude>
+                </excludes>
+                <!--构建过程是否对资源进行变量替换，默认false-->
+                <!--如：我在资源文件中使用了${project.name}。这里filtering改为true。则打包时会将其替换为该项目名-->
+                <filtering>false</filtering>
+            </resource>
+            <!--由于上面指定了resource，所以默认的会失效，导致resources下的文件不会打包进去了，所以这里写一遍-->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <plugins>
+            <!--构建docker镜像并推送-->
+            <!--构建时需要使用带有docker-engine的环境-->
+            <!--这里使用的是我阿里云的linux中的docker引擎进行构建的（window没装docker）-->
+            <!--使用远程构建需要手动开启docker远程API-->
+            <!--修改文件 /lib/systemd/system/docker.service-->
+            <!--修改 ExecStart=/usr/bin/dockerd -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375-->
+            <!--重启 sudo systemctl daemon-reload;sudo service docker restart-->
+            <!--window配置变量DOCKER_HOST=tcp://59.110.168.239:2375.否则构建时还回去本地找docker引擎-->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <configuration>
+                    <!--docker镜像服务器账号密码-->
+                    <username>${docker.username}</username>
+                    <password>${docker.password}</password>
+                    <!--docker镜像服务器地址/命名空间/镜像名-->
+                    <repository>${docker.registry}/${docker.namespace}/docker_file</repository>
+                    <!--生成镜像tag-->
+                    <tag>${project.version}</tag>
+                    <!--表示访问远程构件库的认证信息在settings.xml中配置,我们在pom进行配置了，地址用户名密码-->
+                    <!--<useMavenSettingsForAuth>true</useMavenSettingsForAuth>-->
+                    <!--构建时的ARG参数-->
+                    <!--<buildArgs>
+                        <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>-->
+                </configuration>
+                <!--execution指定了该插件build和push两个目标使用默认绑定，默认的，build和tag目标绑定到package阶段，push目标绑定到deploy阶段，这里不涉及tag目标-->
+                <!--<executions>
+                   <execution>
+                      <id>default</id>
+                      <goals>
+                         <goal>build</goal>
+                         <goal>push</goal>
+                      </goals>
+                   </execution>
+                </executions>-->
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
