@@ -1,2 +1,5 @@
 server:
   port: 7270
+spring:
+  redis:
+    host: num_redis

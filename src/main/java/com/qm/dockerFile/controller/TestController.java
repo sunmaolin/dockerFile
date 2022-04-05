@@ -1,5 +1,7 @@
 package com.qm.dockerFile.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +17,25 @@ import java.io.*;
 @Controller
 public class TestController {
 
+    @Autowired
+    RedisTemplate redisTemplate;
+
+    @ResponseBody
+    @GetMapping("/hello")
+    public String hello() {
+        Object num = redisTemplate.opsForValue().get("num");
+        if (num == null) {
+            redisTemplate.opsForValue().set("num",1);
+            return "这是第一次访问！";
+        }
+        Integer nextNum = (Integer) num + 1;
+        redisTemplate.opsForValue().set("num", nextNum);
+        return "Hello,这是第" + nextNum + "次访问！";
+    }
+
     @ResponseBody
     @GetMapping("/hello/{name}")
     public String hello(@PathVariable String name) {
-
         return "Hello," + name + "!";
 
     }

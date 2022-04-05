@@ -1,0 +1,38 @@
+version: '3'
+services:
+  # docker_file服务
+  docker_file:
+    # 指定镜像名，也可以通过build去构建镜像
+    image: sunml727/docker_file:1.0
+    # 指定容器名
+    container_name: docker_file
+    # 指定端口映射
+    ports:
+      - 7270:7270
+    # 挂载
+    volumes:
+      - /home/images:/home/images
+    # 依赖num_redis服务，启停顺序
+    depends_on:
+      - num_redis
+    # 使用num_net网络
+    networks:
+      - num_net
+
+  # redis服务(用于docker_file计数)
+  num_redis:
+    image: redis
+    container_name: num_redis
+    # 指定host名称，可使用该名称进行网络访问
+    hostname: num_redis
+    ports:
+      - 6379:6379
+    networks:
+      - num_net
+
+networks:
+  # 指定网络
+  num_net:
+    # 指定创建的网络名称
+    name: num_net
+    driver: bridge
