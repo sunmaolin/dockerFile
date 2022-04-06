@@ -76,7 +76,8 @@
             <!--修改文件 /lib/systemd/system/docker.service-->
             <!--修改 ExecStart=/usr/bin/dockerd -H unix:///var/run/docker.sock -H tcp://0.0.0.0:2375-->
             <!--重启 sudo systemctl daemon-reload;sudo service docker restart-->
-            <!--window配置变量DOCKER_HOST=tcp://59.110.168.239:2375.否则构建时还回去本地找docker引擎-->
+            <!--window配置变量DOCKER_HOST=tcp://59.110.168.239:2375.否则构建时还会去本地找docker引擎-->
+            <!--这个插件是通过docker远程api进行构建发布的。我公司docker服务器需要vpn访问。那我推送时是通过我阿里云推送的，我阿里云没有vpn，就推不上去，操蛋-->
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
