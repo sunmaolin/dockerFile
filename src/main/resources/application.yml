@@ -3,3 +3,5 @@ server:
 spring:
   redis:
     host: num_redis
+  profiles:
+    active: dev

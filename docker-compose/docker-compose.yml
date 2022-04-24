@@ -6,12 +6,15 @@ services:
     image: sunml727/docker_file:1.0
     # 指定容器名
     container_name: docker_file
+    # 容器环境变量
+    environment:
+      profile: ${profile}
     # 指定端口映射
     ports:
       - 7270:7270
     # 挂载
     volumes:
-      - /home/images:/home/images
+      - ${imageHome}:/home/images
     # 依赖num_redis服务，启停顺序
     depends_on:
       - num_redis

@@ -1,6 +1,7 @@
 package com.qm.dockerFile.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,12 @@ public class TestController {
     RedisTemplate redisTemplate;
 
     @ResponseBody
+    @GetMapping("/")
+    public String profileName(@Value("${my-name}") String myName) {
+        return myName;
+    }
+
+    @ResponseBody
     @GetMapping("/hello")
     public String hello() {
         Object num = redisTemplate.opsForValue().get("num");
@@ -37,7 +44,6 @@ public class TestController {
     @GetMapping("/hello/{name}")
     public String hello(@PathVariable String name) {
         return "Hello," + name + "!";
-
     }
 
     @GetMapping("/image/{imageName}")

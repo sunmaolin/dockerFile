@@ -93,9 +93,9 @@
                     <!--表示访问远程构件库的认证信息在settings.xml中配置,我们在pom进行配置了，地址用户名密码-->
                     <!--<useMavenSettingsForAuth>true</useMavenSettingsForAuth>-->
                     <!--构建时的ARG参数-->
-                    <!--<buildArgs>
+                    <buildArgs>
                         <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
-                    </buildArgs>-->
+                    </buildArgs>
                 </configuration>
                 <!--execution指定了该插件build和push两个目标使用默认绑定，默认的，build和tag目标绑定到package阶段，push目标绑定到deploy阶段，这里不涉及tag目标-->
                 <!--<executions>
