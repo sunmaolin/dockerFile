@@ -1,5 +1,6 @@
 package com.qm.dockerFile.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,12 @@ import java.io.*;
  */
 @Controller
 public class TestController {
+
+    @ResponseBody
+    @GetMapping("/")
+    public String profileName(@Value("${my-name}") String myName) {
+        return myName;
+    }
 
     @ResponseBody
     @GetMapping("/hello/{name}")

@@ -13,8 +13,14 @@ WORKDIR /home/jar
 # 声明端口
 EXPOSE 7270
 
+ARG JAR_FILE
+
 # 将jar拷贝到镜像中
-COPY ./target/dockerFile.jar ./app.jar
+COPY ${JAR_FILE} ./app.jar
 
 # 入口点 egd参数好像是加快启动速度的
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
+
+ENV profile=dev
+
+CMD ["--spring.profiles.active=${profile}"]

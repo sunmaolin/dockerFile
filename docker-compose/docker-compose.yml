@@ -1,0 +1,17 @@
+version: '3'
+services:
+  # docker_file服务
+  docker_file:
+    # 指定镜像名，也可以通过build去构建镜像
+    image: sunml727/docker_file:1.0
+    # 指定容器名
+    container_name: docker_file
+    # 容器环境变量
+    environment:
+      - profile=${profile}
+    # 指定端口映射
+    ports:
+      - 7270:7270
+    # 挂载
+    volumes:
+      - ${imageHome}:/home/images
